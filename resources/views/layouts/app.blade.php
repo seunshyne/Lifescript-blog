@@ -19,7 +19,7 @@
                 
                 {{-- Logo / Site Name --}}
                 <a href="{{ url('/') }}" class="text-xl font-bold text-indigo-600 hover:text-indigo-800">
-                    LaravelBlog
+                    LifeScript-Blog
                 </a>
 
                 {{-- Navigation Links --}}
