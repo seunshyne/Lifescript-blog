@@ -1,29 +1,38 @@
-# Use the official PHP image with Apache
-FROM php:8.2-apache
+# Use official PHP image with Composer and necessary extensions
+FROM php:8.2-fpm
 
-# Enable required PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql
-
-# Enable Apache mod_rewrite (needed by Laravel)
-RUN a2enmod rewrite
-
-# Copy project files into the container
-COPY . /var/www/html/
-
-# Set working directory
-WORKDIR /var/www/html
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    zip \
+    unzip \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    libzip-dev \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
 # Install Composer
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 
-# Install dependencies
+# Set working directory
+WORKDIR /var/www/html
+
+# Copy project files
+COPY . .
+
+# Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Set correct permissions
+# Build frontend assets (if using Vite)
+RUN npm ci && npm run build || true
+
+# Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Expose port 80 for web traffic
-EXPOSE 80
+# Expose port
+EXPOSE 8000
 
-# Start Apache automatically
-CMD ["apache2-foreground"]
+# Start PHP server
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
