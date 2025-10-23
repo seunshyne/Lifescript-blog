@@ -30,11 +30,7 @@ Route::put('/comments/{comment}/update', [CommentController::class, 'update'])->
 
 Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 
-
-
-
 //Admin
-
 
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
