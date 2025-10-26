@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use App\Models\Post;
 use App\Models\Role;
 use App\Models\Comment;
+use Laravel\Sanctum\HasApiTokens;
 
 
 
@@ -16,7 +17,7 @@ use App\Models\Comment;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
